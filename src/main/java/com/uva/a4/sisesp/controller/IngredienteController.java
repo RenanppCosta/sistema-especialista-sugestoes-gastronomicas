@@ -30,7 +30,7 @@ public class IngredienteController {
 	
 
 	@PostMapping("/criar")
-	public DtoIngrediente createIngrediente(@RequestBody DtoIngrediente dtoIngrediente) {
+	public DtoIngrediente criarIngrediente(@RequestBody DtoIngrediente dtoIngrediente) {
 
 		boolean ok = service.salvar(dtoIngrediente);
 		return modelMapper.map(dtoIngrediente, DtoIngrediente.class);

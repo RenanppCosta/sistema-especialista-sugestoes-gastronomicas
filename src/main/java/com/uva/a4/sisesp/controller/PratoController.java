@@ -30,7 +30,7 @@ public class PratoController {
 	PratoService service;
 
 	@PostMapping("/criar")
-	public DtoPrato createPrato(@RequestBody DtoPrato dtoPrato) {
+	public DtoPrato criarPrato(@RequestBody DtoPrato dtoPrato) {
 
 		boolean ok = service.salvar(dtoPrato);
 		return modelMapper.map(dtoPrato, DtoPrato.class);
