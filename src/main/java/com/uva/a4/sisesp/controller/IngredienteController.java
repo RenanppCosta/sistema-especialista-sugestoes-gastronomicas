@@ -1,47 +1,66 @@
 package com.uva.a4.sisesp.controller;
 
-import java.util.List;
 
-import org.modelmapper.ModelMapper;
+import com.uva.a4.sisesp.model.Ingrediente;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.uva.a4.sisesp.dto.DtoIngrediente;
 import com.uva.a4.sisesp.service.IngredienteService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
-@RequestMapping(path = "/ingrediente", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/ingrediente")
 @Tag(name = "Ingrediente Controller", description = "Exemplo de documentação de API")
 public class IngredienteController {
 
-	@Autowired
-	private ModelMapper modelMapper;
 
-	@Autowired
-	IngredienteService service;
+    @Autowired
+    IngredienteService service;
 
-	
+    @GetMapping("/listar")
+    public ResponseEntity<List<DtoIngrediente>> getAll() {
+        List<Ingrediente> ingredienteList = service.findAll();
+        List<DtoIngrediente> dtoIngredienteList = ingredienteList.stream()
+                .map(ingrediente -> {
+                    DtoIngrediente requestIngrediente = new DtoIngrediente();
+                    requestIngrediente.setId(ingrediente.getId());
+                    requestIngrediente.setNome(ingrediente.getNome());
+                    return requestIngrediente;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtoIngredienteList);
+    }
 
-	@PostMapping("/criar")
-	public DtoIngrediente createIngrediente(@RequestBody DtoIngrediente dtoIngrediente) {
+    @GetMapping("/listar/{id}")
+    public ResponseEntity<DtoIngrediente> findById(@PathVariable long id) {
+        DtoIngrediente dtoIngrediente = service.findById(id);
+        return ResponseEntity.ok(dtoIngrediente);
+    }
 
-		boolean ok = service.salvar(dtoIngrediente);
-		return modelMapper.map(dtoIngrediente, DtoIngrediente.class);
-	}
+    @PostMapping("/criar")
+    public ResponseEntity<DtoIngrediente> createIngrediente(@RequestBody DtoIngrediente dtoIngrediente) {
+        DtoIngrediente ingredienteCriado = service.salvar(dtoIngrediente);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ingredienteCriado);
+    }
 
-	@GetMapping("/Listar")
-	public List<DtoIngrediente> getAll() {
+    @PutMapping("/{id}")
+    public ResponseEntity<DtoIngrediente> updateIngrediante(@RequestBody @Valid DtoIngrediente dtoIngrediente, @PathVariable long id) {
+        DtoIngrediente updateIngradiente = service.updateIngrediente(dtoIngrediente, id);
+        return ResponseEntity.ok(updateIngradiente);
+    }
 
-		List<DtoIngrediente> listaDto = service.listar();
-		
-		return listaDto;
-	}
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<DtoIngrediente> deleteIngrediante(@PathVariable long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
+

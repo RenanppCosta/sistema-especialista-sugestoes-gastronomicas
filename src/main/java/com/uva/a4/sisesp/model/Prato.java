@@ -22,13 +22,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "pratos") // Define o nome da tabela no banco de dados
+@Table(name = "pratos")
 public class Prato implements Serializable {
 
 	private static final long serialVersionUID = 7988972443891325412L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // Geração automática de IDs
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(nullable = false)

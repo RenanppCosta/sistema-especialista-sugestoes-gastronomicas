@@ -1,91 +1,79 @@
 package com.uva.a4.sisesp.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.uva.a4.sisesp.dto.DtoIngrediente;
 import com.uva.a4.sisesp.dto.DtoPrato;
+import com.uva.a4.sisesp.dto.request.RequestPrato;
+
 import com.uva.a4.sisesp.model.Ingrediente;
 import com.uva.a4.sisesp.model.Prato;
 import com.uva.a4.sisesp.repository.IngredienteRepository;
 import com.uva.a4.sisesp.repository.PratoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
-
 public class PratoService {
 
-//	@Autowired
-	PratoRepository repository;
+    @Autowired
+    private PratoRepository pratoRepository;
 
-	@Autowired
-	IngredienteRepository ingredienteRepository;
+    @Autowired
+    private IngredienteRepository ingredienteRepository;
 
-	@Autowired
-	private ModelMapper modelMapper;
+    public DtoPrato createPrato(RequestPrato requestPrato) {
+        Prato prato = new Prato();
+        prato.setNome(requestPrato.getNome());
 
-	public PratoService(PratoRepository repository) {
-		this.repository = repository;
-	}
+        List<Ingrediente> ingredientes = requestPrato.getIngredientes().stream()
+                .map(ingredienteId -> {
+                    return ingredienteRepository.findById(ingredienteId)
+                            .orElseThrow(() -> new RuntimeException("Ingrediente não encontrado: " + ingredienteId));
+                })
+                .collect(Collectors.toList());
 
-	public List<DtoPrato> listar() {
+        prato.setIngredientes(ingredientes);
 
-		List<Prato> lista = repository.findAll();
+        Prato savedPrato = pratoRepository.save(prato);
 
-		List<DtoPrato> listDto = mapListToDtos(lista);
+        return DtoPrato.fromPrato(savedPrato);
+    }
 
-		return listDto;
-	}
+    public List<DtoPrato> getAllPratos() {
+        List<Prato> pratos = pratoRepository.findAll();
+        return pratos.stream()
+                .map(DtoPrato::fromPrato)
+                .collect(Collectors.toList());
+    }
 
-	public boolean salvar(DtoPrato dto) {
+    public DtoPrato findById(long id) {
+        Prato prato = pratoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Prato não encontrado: " + id));
+        return DtoPrato.fromPrato(prato);
+    }
 
-		Prato prato = modelMapper.map(dto, Prato.class);
-		
-		repository.save(prato);
+    public DtoPrato updatePrato(RequestPrato requestPrato, long id) {
+        Prato existingPrato = pratoRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Prato não encontrado"));
 
-		return true;
-	}
+        List<Ingrediente> ingredientes = requestPrato.getIngredientes().stream()
+                .map(ingredienteId -> ingredienteRepository.findById(ingredienteId)
+                        .orElseThrow(() -> new RuntimeException("Ingrediente não encontrado: " + ingredienteId)))
+                .collect(Collectors.toList());
 
-	public boolean deletar(DtoPrato dto) {
+        existingPrato.setIngredientes(ingredientes);
 
-		// Prato obj = new Prato(dto.getId(), dto.getNome(), null);
+        Prato updatedPrato = pratoRepository.save(existingPrato);
 
-		repository.deleteById(dto.getId());
+        return DtoPrato.fromPrato(updatedPrato);
+    }
 
-		return true;
-	}
 
-	public boolean alterar(DtoPrato dto) {
-
-		Optional<Prato> opt = repository.findById(dto.getId());
-
-		Prato prato = opt.get();
-
-		prato.setNome(dto.getNome());
-
-		List<Ingrediente> lista = new ArrayList<Ingrediente>();
-
-		//Iterando sobre uma lista de obetos do tipo DtoIngrediente
-		for (DtoIngrediente ingrediente : dto.getIngredientes()) {
-			Optional<Ingrediente> optIngrediente = ingredienteRepository.findById(ingrediente.getId());
-
-			lista.add(optIngrediente.get());
-		}
-
-		prato.setIngredientes(lista);
-
-		repository.save(prato);
-
-		return true;
-	}
-
-	public List<DtoPrato> mapListToDtos(List<Prato> pratos) {
-		return modelMapper.map(pratos, new TypeToken<List<DtoPrato>>() {
-		}.getType());
-	}
+    public void deletar(long id) {
+        Prato prato = pratoRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Prato not Found"));
+        pratoRepository.delete(prato);
+    }
 }
