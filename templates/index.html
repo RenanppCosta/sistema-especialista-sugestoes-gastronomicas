@@ -106,7 +106,7 @@
 
         // Função para consultar ingredientes
         document.getElementById('consultar').addEventListener('click', async () => {
-            const prato = document.getElementById('prato').value.toLowerCase().replace(/ /g, '_');
+            const prato = document.getElementById('prato').value.toLowerCase();  // Sem a substituição de espaços
             const response = await fetch(`http://127.0.0.1:5000/listar_ingredientes?prato=${prato}`);
             const data = await response.json();
 
@@ -117,10 +117,10 @@
                 document.getElementById('resultado').innerText = 'Nenhum resultado encontrado';
             }
         });
-
+        
         // Função para buscar prato
         document.getElementById('buscar').addEventListener('click', async () => {
-            const ingredientesInput = document.getElementById('ingredientes').value.toLowerCase().replace(/ /g, '_');
+            const ingredientesInput = document.getElementById('ingredientes').value.toLowerCase();  // Sem a substituição de espaços
             const ingredientesArray = ingredientesInput.split(',').map(ing => ing.trim());
 
             const queryString = ingredientesArray.map(ing => `ingredientes=${encodeURIComponent(ing)}`).join('&');
@@ -135,7 +135,8 @@
                 document.getElementById('resultado-busca').innerText = 'Nenhum prato encontrado';
             }
         });
+
+
     </script>
 </body>
 </html>
-

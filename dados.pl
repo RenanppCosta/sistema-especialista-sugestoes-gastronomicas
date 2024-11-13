@@ -28,13 +28,10 @@ ingredientes(frango_alho_limao, [peito_de_frango, alho, limao, azeite, sal, pime
 listar_ingredientes(Prato) :- 
     ingredientes(Prato, Ingredientes), 
     atomic_list_concat(Ingredientes, ', ', IngredientesSeparados),
-    format('Ingredientes para ~w:~n', [Prato]),  % Imprime o prato
-    nl,  % Adiciona uma linha em branco
     format(' ~w~n', [IngredientesSeparados]).  % Imprime os ingredientes
 
 % Encontrar todos os pratos que contêm os ingredientes buscados
 buscar_pratos(IngredientesBuscados, Pratos) :- 
-    write('Pratos Encontrados: '), nl,
     findall(Prato, 
         (
             ingredientes(Prato, IngredientesPrato),

@@ -55,7 +55,7 @@ def listar_ingredientes():
     if prato:
         resultado = consultar_prolog(f"listar_ingredientes({prato})")
         ingredientes_formatados = formatar_resultados(resultado)
-        return jsonify({'resultado': ' / '.join(ingredientes_formatados)})  # Retorna ingredientes formatados com '/'
+        return jsonify({'resultado': ', '.join(ingredientes_formatados)})  
     return jsonify({'erro': 'Prato não fornecido'})
 
 @app.route('/buscar_prato', methods=['GET'])
@@ -69,7 +69,7 @@ def buscar_prato():
 
     if resultado:  # Verifica se algum resultado foi encontrado
         pratos_formatados = formatar_resultados(resultado)
-        return jsonify({'resultado': ' / '.join(pratos_formatados)})  # Retornando pratos formatados com '/'
+        return jsonify({'resultado': ', '.join(pratos_formatados)}) 
     else:
         return jsonify({'resultado': 'Nenhum prato encontrado'})
 
