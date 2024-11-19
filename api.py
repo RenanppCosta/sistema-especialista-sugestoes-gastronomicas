@@ -73,5 +73,21 @@ def buscar_prato():
     else:
         return jsonify({'resultado': 'Nenhum prato encontrado'})
 
+@app.route('/listar_todos_pratos', methods=['GET'])
+def listar_todos_pratos():
+    try:
+        resultado = consultar_prolog("listar_todos_pratos(Pratos)")
+        
+        if resultado:
+            pratos_formatados = formatar_resultados(resultado)
+            return jsonify({'resultado': ', '.join(pratos_formatados)})  
+
+        else:
+            return jsonify({'resultado': 'Nenhum prato encontrado'})
+    
+    except Exception as e:
+        return jsonify({'resultado': 'Erro ao consultar dado'})
+
+
 if __name__ == '__main__':
     app.run(debug=True)

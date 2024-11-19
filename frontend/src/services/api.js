@@ -16,7 +16,7 @@ export async function buscarPrato(ingredientes) {
 }
 
 export async function buscarTodosPratos() {
-    const response = await axios.get(`${baseUrl}buscar_prato?`);
+    const response = await axios.get(`${baseUrl}listar_todos_pratos`);
         
     return response;
 }

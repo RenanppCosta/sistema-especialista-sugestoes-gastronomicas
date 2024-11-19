@@ -50,7 +50,7 @@ function App() {
         <p className="text-center text-lg text-gray-300">Encontre os ingredientes dos seus pratos favoritos e descubra novas receitas! </p>
         <InputSearch placeholder="Digite o nome do prato..." id="prato" onSearch={onSearchPrato}/>
         <InputSearch placeholder="Busque por ingredientes..." id="ingredientes" onSearch={onSearchIngrediente}/>
-        <BoxResults resultado={resultado} />
+        <BoxResults resultado={resultado} setResultado={setResultado} />
       </body>
     </>
   )

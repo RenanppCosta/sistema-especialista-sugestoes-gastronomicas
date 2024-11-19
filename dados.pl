@@ -40,6 +40,10 @@ buscar_pratos(IngredientesBuscados, Pratos) :-
         ), 
     Pratos).
 
+listar_todos_pratos(Pratos) :-
+    findall(Prato, ingredientes(Prato, _), Pratos),
+    write(Pratos), nl.  % Escreve a lista de pratos no formato desejado
+
 % Para ver se uma lista é subconjunto da outra
 subset([], _).
 subset([H|T], Lista) :- 
