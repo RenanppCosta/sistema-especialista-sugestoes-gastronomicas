@@ -17,7 +17,7 @@ function App() {
             }
 
             setErrorPrato(false)
-            const pratoComUnderlines = prato.replace(/(?!^)\s+(?=\S)/g, "_");;
+            const pratoComUnderlines = prato.replace(/(?!^)\s+(?=\S)/g, "_");
           
             const response = await listarIngredientes(pratoComUnderlines);
             if (response.data.resultado) {
@@ -30,35 +30,38 @@ function App() {
         }
     };
 
-    const onSearchIngrediente = async (ingredientes) =>{
+    const onSearchIngrediente = async (ingredientes) => {
       try {
-        if(!ingredientes.trim()){
+        if (!ingredientes.trim()) {
           setErrorIngrediente(true);
           setResultado("Por favor, insira o nome de um ou mais ingredientes.");
           return;
         }
-
+    
+        const ingredientesArray = ingredientes
+          .split(",")
+          .map((ing) => ing.trim().replace(/(?!^)\s+(?=\S)/g, "_"));
+    
         setErrorIngrediente(false);
-        const ingredientesArray = ingredientes.split(",").map((ing) => ing.trim());
-  
+    
         const response = await buscarPrato(ingredientesArray);
-  
+    
         if (response.data.resultado) {
-          let ingredientes = response.data.resultado;
-
-          if (typeof ingredientes === "string") {
-            ingredientes = ingredientes.match(/([a-zA-Z0-9\u00C0-\u00FF]+(?: [a-zA-Z0-9\u00C0-\u00FF]+)*)/g);
+          let pratos = response.data.resultado;
+    
+          if (typeof pratos === "string") {
+            pratos = pratos.match(/([a-zA-Z0-9\u00C0-\u00FF]+(?: [a-zA-Z0-9\u00C0-\u00FF]+)*)/g);
           }
-
-          setResultado(ingredientes.join(", "));
+    
+          setResultado(pratos.join(", "));
         } else {
-          setResultado(""); 
+          setResultado("Nenhum prato encontrado."); 
         }
       } catch (error) {
-        setResultado(""); 
+        setResultado("Erro ao buscar pratos.");
         console.error(error);
       }
-    }
+    };
 
   return (
     <>
