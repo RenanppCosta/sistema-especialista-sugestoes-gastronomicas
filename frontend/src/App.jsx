@@ -66,7 +66,7 @@ function App() {
   return (
     <>
       <body className="flex flex-col items-center">
-        <h1 className="text-4xl font-extrabold bg-clip-text text-transparent text-center bg-gradient-to-r from-blue-400 to-blue-800 py-8">Sugestões Gastrômicas</h1>
+        <h1 className="text-4xl font-extrabold bg-clip-text text-transparent text-center bg-gradient-to-r from-blue-400 to-blue-800 py-8">Sugestões Gastronômicas</h1>
         <p className="text-center text-lg text-gray-300">Encontre os ingredientes dos seus pratos favoritos e descubra novas receitas! </p>
         <InputSearch placeholder="Digite o nome do prato..." id="prato" onSearch={onSearchPrato} error={errorPrato} />
         <InputSearch placeholder="Busque por ingredientes..." id="ingredientes" onSearch={onSearchIngrediente} error={errorIngrediente} />
